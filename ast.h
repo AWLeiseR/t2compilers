@@ -11,4 +11,5 @@ struct node{
 
 void RPN_Walk(TreeNode* aux);
 void Delete_Tree(TreeNode* aux);
-//TreeNode* mallocTree();
+TreeNode* mallocTree(TreeNode* p1, TreeNode * p3, float value,int type);
+float calcula(TreeNode* aux);

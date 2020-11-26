@@ -1,16 +1,17 @@
 FLEX=flex
 BISON=bison
 CC=gcc
+FLAGS=-g -Wall -lm -std=c99
 
 PROGRAMA = calculadora
 LEXICO = lexico.l
 SINTATICO = sintatico.y
 
-$(PROGRAMA): $(LEXICO) $(SINTATICO) ast.h ast.c
+$(PROGRAMA): $(LEXICO) $(SINTATICO) ast.h ast.c funcoes.c funcoes.h
 	$(BISON) -d $(SINTATICO)
 	$(FLEX) $(LEXICO)
-	$(CC) -c *.c -I.
-	$(CC) *.o -o $(PROGRAMA)
+	$(CC) -c *.c -I.  $(FLAGS)
+	$(CC) *.o -o $(PROGRAMA)  $(FLAGS)
 
 clean:
 	rm -f *.yy.c

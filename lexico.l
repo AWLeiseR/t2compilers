@@ -35,9 +35,9 @@
 
 "abs"               { return ABS; }
 
-[0-9]+              { return REAL; }
+[0-9]+              {yylval.real=atof(yytext); return REAL; }
 
-[0-9]+"."[0-9]+     { return REAL; }
+[0-9]+"."[0-9]+     {yylval.real=atof(yytext); return REAL; }
 
 "x"                 {  return VAR; }
 
