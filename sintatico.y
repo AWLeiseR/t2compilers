@@ -8,6 +8,7 @@
     void yyerror(char *s);
 
     TreeNode* AST = NULL;
+    TreeNode* plotTree=NULL;
 
 %}
 
@@ -25,10 +26,13 @@
 %token L_PAREN
 %token R_PAREN
 %token SEMICOLON
+%token COLON
+%token COMMA
 %token SEN
 %token COS
 %token TAN
 %token ABS
+%token EQUAL
 %token INT
 %token REAL
 %token VAR
@@ -66,35 +70,39 @@
 %type <real> REAL
 
 
+
 %%
 
-calc: option SEMICOLON EOL {printf(">");}
+calc: option SEMICOLON EOL {printf(">");return 1;}
     |exp EOL { AST = $1; 
         if(AST){
             RPN_Walk(AST);
-            printf("resultado->%f\n",calcula(AST));
+            
             Delete_Tree(AST);
         }
-        printf(">");
+        printf("\n>");
+        return 1;
     }
+    |EOL {printf(">");return 1;}
+    |QUIT {return 0;}
 ;
 
 option:SHOW SETTINGS {imprimeSettings();}
     |RESET SETTINGS {resetSettings();}
-    |SET HVIEW {setHView();}
-    |SET VVIEW {setVView();}
+    |SET HVIEW REAL COLON REAL{setHView($3,$5);}
+    |SET VVIEW REAL COLON REAL{setVView($3,$5);}
     |SET AXIS ON {axisOn();}
     |SET AXIS OFF {axisOff();}
-    |PLOT {printf("%s\n",yytext);}
-    |PLOT L_PAREN exp1 R_PAREN {printf("%s\n",yytext);}
-    |SET INTEGRAL_STEPS {printf("%s\n",yytext);}
-    |SET INTEGRATE {printf("%s\n",yytext);}
-    |MATRIX {printf("%s\n",yytext);}
+    |PLOT {plotFunction();}
+    |PLOT L_PAREN exp1 R_PAREN {plotTree=$3;}
+    |SET INTEGRAL_STEPS REAL {setIntegralSteps($3);}
+    |INTEGRATE  L_PAREN REAL COLON REAL COMMA exp1 R_PAREN{AST=$7;printf("%s\n",yytext);}
+    |MATRIX EQUAL {printf("%s\n",yytext);}
     |SHOW MATRIX {printf("%s\n",yytext);}
     |SOLVE DETERMINANT {printf("%s\n",yytext);}
     |SOLVE LINEAR_SYSTEM {printf("%s\n",yytext);}
-    |ABOUT {imprimeAbout();}
-    |QUIT {return 0;}
+    |ABOUT {imprimeAbout();return 1;}
+    
 ;
 
 exp:exp1
@@ -133,8 +141,8 @@ term:VAR {$$ = mallocTree(NULL,NULL,0,VAR);}
 %%
 
 void yyerror(char *s){
-    printf("Erro de Sintaxe: 9|%s|9", yytext);
-    exit(0);
+    printf("Erro de Sintaxe: [%s]\n", yytext);
+    
 }
 
 int main(int argc, char **argv){

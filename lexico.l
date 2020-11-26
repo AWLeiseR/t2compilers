@@ -27,6 +27,12 @@
 
 ";"                 { return SEMICOLON; }
 
+":"                 {return COLON;}
+
+","                 {return COMMA;}
+
+"="                 {return EQUAL;}
+
 "sen"               { return SEN; }
 
 "cos"               { return COS; }
@@ -83,6 +89,6 @@
 
 "about"             { return ABOUT; }
 
-. {printf("erro %s",yytext);exit(0);}
+. {printf("Simbolo Invalido -> %s\n\n",yytext);}
 
 %%

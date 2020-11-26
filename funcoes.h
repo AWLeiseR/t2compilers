@@ -5,11 +5,11 @@
 void imprimeSettings();
 void imprimeAbout();
 void resetSettings();
-void setHView();
-void setVView();
+void setHView(float hviewlo, float hviewhi);
+void setVView(float vviewlo, float vviewhi);
 void axisOn();
 void axisOff();
-void plotFunctio();
-void serIntegralSteps();
-void Integrate();
+void plotFunction();
+void setIntegralSteps(float step);
+void Integrate(float downLimit, float upLimit);
 #endif 

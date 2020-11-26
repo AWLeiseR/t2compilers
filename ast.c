@@ -11,6 +11,8 @@ void RPN_Walk(TreeNode* aux){
 			case MINUS:{printf("- ");};break;
 			case ASTERIX:{printf("* ");};break;
 			case DIV:{printf("/ ");};break;
+			case EXP:{printf("^ ");}break;
+			case PERCENT: {printf("%% ");}break;
 			case REAL:{printf("%d ",aux->value);};break;
 			case SEN:{printf("SEN ");};break;
 			case COS:{printf("COS ");};break;
@@ -52,15 +54,17 @@ float calcula(TreeNode* aux){
 		calcula(aux->left);
 		calcula(aux->right);
 		switch(aux->node_type){
-			case PLUS:return calcula(aux->left)+calcula(aux->right);
-			case MINUS:return calcula(aux->left)-calcula(aux->right);
-			case ASTERIX:return calcula(aux->left)*calcula(aux->right);
-			case DIV:return calcula(aux->left)*calcula(aux->right);
+			case PLUS:return calcula(aux->left) + calcula(aux->right);
+			case MINUS:return calcula(aux->left) - calcula(aux->right);
+			case ASTERIX:return calcula(aux->left) * calcula(aux->right);
+			case DIV:return calcula(aux->left) * calcula(aux->right);
+			case EXP:return pow( calcula(aux->left) , calcula(aux->right) );
+			case PERCENT: return (int)calcula(aux->left) % (int)calcula(aux->right);
 			case REAL:return aux->value;
-			case SEN:return sin(calcula(aux->left));
-			case COS:return cos(calcula(aux->left));
-			case TAN:return tan(calcula(aux->left));
-			case ABS:return abs(calcula(aux->left));
+			case SEN:return sin( calcula(aux->left) );
+			case COS:return cos( calcula(aux->left) );
+			case TAN:return tan( calcula(aux->left) );
+			case ABS:return abs( calcula(aux->left) );
 			default:return 0;
 		}
 	}else{
