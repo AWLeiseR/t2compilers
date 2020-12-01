@@ -1,5 +1,6 @@
 #include <ast.h>
 #include <sintatico.tab.h>
+#include <funcoes.h>
 
 void RPN_Walk(TreeNode* aux){
 	//treenode* aux = (treenode*) x ;
@@ -91,19 +92,27 @@ void imprimeRpnFormat(TreeNode *tree){
 	
 }
 
-float * alocaMatrix(TreeNode * tree){
+void alocaMatrix(TreeNode * tree){
+	
+	setLinha(0);
+	setColuna(0);
+	resetAuxColuna();
+	limpaMatrix();
+	percorreArvoreMatrix(tree);
 	
 	
 }
 
-float percorreArvoreMatrix(TreeNode * tree){
+void percorreArvoreMatrix(TreeNode * tree){
 	if(tree){
+		percorreArvoreMatrix(tree->left);
+		percorreArvoreMatrix(tree->right);
 		switch(tree->node_type){
 			case R_BRACKET: break;
-			case L_BRACKET: break;
-			case REAL: break;
-			case COMMA: break;
-			default: return ;
+			case L_BRACKET: {setLinha(getLinha()+1); setColuna(0); }break;
+			case REAL: {insertElementMatrix(getLinha(),getColuna(),tree->value);setAuxColuna(getColuna()+1);setColuna(getColuna()+1);} break;
+			case COMMA:break;
+			default: break;
 		}
 	}
 }

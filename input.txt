@@ -1,7 +1,0 @@
-set h_view -4 : -4;
-set v_view -4 : 4;
-plot(sen(x));
-plot(cos(x));
-plot(tan(x));
-plot(x+2);
-quit

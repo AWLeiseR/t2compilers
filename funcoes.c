@@ -12,6 +12,43 @@ int connectDots = 0;
 
 char grafico [25][80];
 double matrix[10][10];
+double auxMatrix[10][10];
+double L[10][10];
+int linha,coluna, auxColuna;
+
+int getLinha(){
+    return linha;
+}
+void setLinha(int linha1){
+    linha = linha1;
+}
+
+int getColuna(){
+    return coluna;
+}
+
+void setColuna(int coluna1){
+    coluna = coluna1;
+}
+
+void insertElementMatrix(int linha,int coluna,double element){
+    
+    matrix[linha][coluna]=element;
+    
+}
+
+int getAuxColuna(){
+    return auxColuna;
+}
+
+void setAuxColuna(int coluna){
+    if(auxColuna < coluna)
+        auxColuna = coluna;
+}
+
+void resetAuxColuna(){
+    auxColuna = 1;
+}
 
 void imprimeSettings(){
     
@@ -99,7 +136,7 @@ void printAxis(float somaV,float pixelV,float somaH,float pixelH){
     if(i < 25 && i > 0){
         
         for(x=0;x<80;x++){
-            grafico[i][x] = '_';
+            grafico[i][x] = '-';
         }
     
     }
@@ -124,8 +161,8 @@ void printAxis(float somaV,float pixelV,float somaH,float pixelH){
 void imprimeGrafico(){
     int i,j;
 
-    for(i=0;i<25;i++){
-        for(j=80;j>0;j--){
+    for(i=24;i>=0;i--){
+        for(j=0;j<80;j++){
             
             printf("%c",grafico[i][j]);
 
@@ -199,6 +236,113 @@ void integrate(TreeNode* tree,float downLimit, float upLimit){
     
     }
     
+}
+
+void imprimeCabecalho(){
+    int i, espacos=(auxColuna*17)+1;
+    
+    printf("+-");
+    for(i=0;i<espacos;i++){
+        printf(" ");
+    }
+    printf("-+\n");
+}
+
+void limpaMatrix(){
+	int i,j;
+	for(i=0;i<10;i++){
+		for(j=0;j<10;j++){
+			matrix[i][j]=0;
+		}
+	}
+}
+
+void imprimeMatrix(){
+    int i,j;
+    printf("\n");
+    imprimeCabecalho();
+    for(i = 0; i < linha; i++){
+        printf("| ");
+        for(j = 0; j < auxColuna; j++){
+            printf(" %.10e",matrix[i][j]);
+        }
+        printf("  |\n");
+    }
+    imprimeCabecalho();
+    printf("\n");
+}
+
+void calculaLU(){
+    int i,j,y;
+	float pivo;
+
+	for(i=0;i<auxColuna;i++){
+		L[i][i]=1;
+	}
+
+	for(j=0;j<auxColuna-1;j++){//anda coluna
+
+		pivo=auxMatrix[j][j];//pivo diagonal principal
+		
+		for(y=1+j;y<linha;y++){//anda linha
+			
+				L[y][j] = auxMatrix[y][j]/pivo; // multiplicador
+				
+				for(i=0;i<auxColuna;i++){//percorre as colunas da linha
+					
+				 	auxMatrix[y][i] -= L[y][j]*auxMatrix[j][i];
+				
+				}
+		}
+	}
+    
+}
+
+void transferirMatrix(){
+    int i,j;
+    
+    for(i=0;i<linha;i++){
+        for(j=0;j<auxColuna;j++){
+            auxMatrix[i][j]=matrix[i][j];
+        }
+    }
+}
+
+void calculaDeterminante(){
+    int i, j;
+    float det=1;
+    if(linha == auxColuna){
+        if(linha==1){
+
+            det=matrix[0][0];
+        
+        }else if(linha == 2){
+          
+            det=matrix[0][0]*matrix[1][1]-matrix[0][1]*matrix[1][0];
+        
+        }else{
+            
+            transferirMatrix();
+            calculaLU();
+            for(i=0;i<auxColuna;i++){
+                det = det*auxMatrix[i][i];
+            }
+        
+        }
+        
+        printf("\n\n%f\n\n",det);
+    }else{
+        printf("\n\nMatrix format incorrect!\n\n");
+    }
+    
+}
+
+void resolveSistemaLinear(){
+    if(linha == auxColuna +1 ){
+
+    }else{
+        printf("\n\nMatrix format incorrect!\n\n");
+    }
 }
 
 void imprimeAbout(){

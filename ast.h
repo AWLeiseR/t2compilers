@@ -21,5 +21,7 @@ void Delete_Tree(TreeNode* auxx);
 TreeNode* mallocTree(TreeNode* p1, TreeNode * p3, float value,int type);
 float calcula(TreeNode* aux,float x);
 void imprimeRpnFormat(TreeNode *tree);
+void alocaMatrix(TreeNode * tree);
+void percorreArvoreMatrix(TreeNode * tree);
 
 #endif

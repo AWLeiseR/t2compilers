@@ -71,6 +71,7 @@
 %type <ast> mat
 %type <ast> vector
 %type <ast> element
+%type <real> realSigned
 %type <real> REAL
 
 %%
@@ -83,31 +84,32 @@ calc: option SEMICOLON EOL {printf(">");return 1;}
 
 option:SHOW SETTINGS {imprimeSettings();}
     |RESET SETTINGS {resetSettings();}
-    |SET HVIEW REAL COLON REAL{setHView($3,$5);}
-    |SET VVIEW REAL COLON REAL{setVView($3,$5);}
-    |SET AXIS ON {axisOn();}
-    |SET AXIS OFF {axisOff();}
-    |PLOT {plotFunction();}
-    |PLOT L_PAREN exp1 R_PAREN {plotTree=$3;plotFunction(plotTree);}
-    |SET INTEGRAL_STEPS REAL {setIntegralSteps($3);}
-    |INTEGRATE  L_PAREN REAL COLON REAL COMMA exp1 R_PAREN{AST=$7;integrate(AST,$3,$5);}
-    |MATRIX EQUAL L_BRACKET mat R_BRACKET{printf("%s\n",yytext);}
-    |SHOW MATRIX {printf("%s\n",yytext);}
-    |SOLVE DETERMINANT {printf("%s\n",yytext);}
+    |SET HVIEW realSigned COLON realSigned {setHView($3,$5);printf("\n");}
+    |SET VVIEW realSigned COLON realSigned {setVView($3,$5);printf("\n");}
+    |SET AXIS ON {axisOn();printf("\n");}
+    |SET AXIS OFF {axisOff();printf("\n");}
+    |PLOT {plotFunction();printf("\n");}
+    |PLOT L_PAREN exp1 R_PAREN {plotTree=$3;plotFunction(plotTree);printf("\n");}
+    |SET INTEGRAL_STEPS REAL {setIntegralSteps($3);printf("\n");}
+    |INTEGRATE  L_PAREN REAL COLON REAL COMMA exp1 R_PAREN{AST=$7;integrate(AST,$3,$5);printf("\n");}
+    |MATRIX EQUAL L_BRACKET mat R_BRACKET{AST = $4 ; alocaMatrix(AST);printf("\n");}
+    |SHOW MATRIX {imprimeMatrix();printf("\n");}
+    |SOLVE DETERMINANT {calculaDeterminante();}
     |SOLVE LINEAR_SYSTEM {printf("%s\n",yytext);}
     |ABOUT {imprimeAbout();return 1;}
     
 ;
 
-mat:L_BRACKET vector R_BRACKET {}
-    |mat COMMA L_BRACKET vector R_BRACKET {}
+mat:L_BRACKET vector R_BRACKET {$$ = mallocTree($2,NULL,0,L_BRACKET);}
+    |mat COMMA L_BRACKET vector R_BRACKET {$$ = mallocTree($1,$4,0,L_BRACKET);}
 ;
 
-vector:element {}
-    |vector COMMA element {}
+vector:element {$$ = $1;}
+    |vector COMMA element {$$ = mallocTree($1,$3,0,COMMA);}
 ;
 
-element:REAL {}
+element:REAL {$$ = mallocTree(NULL,NULL,$1,REAL);}
+    |MINUS REAL {$$ = mallocTree(NULL,NULL,-$2,REAL);}
 ;
 
 exp:exp1
@@ -143,8 +145,9 @@ term:VAR {$$ = mallocTree(NULL,NULL,0,VAR);}
     |REAL {$$ = mallocTree(NULL,NULL,$1,REAL);}
 ;
 
-realSigned: PLUS REAL
-    | MINUS REAL
+realSigned: PLUS REAL {$$ = $2;}
+    | MINUS REAL {$$ = - $2;}
+    |REAL {$$ = $1;}
 ;
 
 %%
